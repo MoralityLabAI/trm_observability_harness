@@ -1,0 +1,3 @@
+{"ts": 1773979352.198126, "event": "reset", "payload": {"state": {"turn": 0, "active_node": null, "beliefs": {}, "coalitions": [], "world_vars": {}, "messages": [], "done": false, "history": []}, "forecast_questions": []}}
+{"ts": 1773979370.4165947, "event": "reset", "payload": {"state": {"turn": 0, "active_node": null, "beliefs": {}, "coalitions": [], "world_vars": {}, "messages": [], "done": false, "history": []}, "forecast_questions": []}}
+{"ts": 1773981173.2897513, "event": "reset", "payload": {"state": {"turn": 0, "active_node": null, "beliefs": {}, "coalitions": [], "world_vars": {}, "messages": [], "done": false, "history": []}, "forecast_questions": []}}

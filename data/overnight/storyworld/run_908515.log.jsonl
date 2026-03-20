@@ -1,0 +1,1 @@
+{"ts": 1773995819.2683642, "event": "reset", "payload": {"state": {"turn": 0, "active_node": null, "beliefs": {}, "coalitions": [], "world_vars": {}, "messages": [], "done": false, "history": []}, "forecast_questions": []}}

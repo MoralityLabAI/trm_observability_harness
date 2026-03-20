@@ -1,0 +1,35 @@
+run_name: qwopus_storyworld_expanded
+max_episodes: 20
+max_steps_per_episode: 15
+concurrency: 1
+export_path: data/qwopus_storyworld_expanded_replays.jsonl
+model:
+  provider: openai_compatible
+  base_url: http://snacksack-ms-7d32.tail3156cd.ts.net:8080/v1
+  model_name: Qwen3.5-27B.Q4_K_M.gguf
+  temperature: 0.3
+  top_p: 0.95
+  max_new_tokens: 1024
+envs:
+  - type: storyworld_native
+    name: diplomacy_storyworld_novel_1
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    seed: 101
+    log_path: data/storyworld_novel_1.log.jsonl
+  - type: storyworld_native
+    name: diplomacy_storyworld_novel_2
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    seed: 202
+    log_path: data/storyworld_novel_2.log.jsonl
+  - type: reasoning_gym
+    name: rg_gsm8k_reasoning
+    gym_config: gsm8k
+    num_examples: 10
+    seed: 42
+  - type: reasoning_gym
+    name: rg_logic_reasoning
+    gym_config: logic_puzzle
+    num_examples: 10
+    seed: 7

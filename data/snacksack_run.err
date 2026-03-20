@@ -1,0 +1,17 @@
+Map:   0%|          | 0/8 [00:00<?, ? examples/s]Map: 100%|##########| 8/8 [00:00<00:00, 283.18 examples/s]
+Traceback (most recent call last):
+  File "C:\projects\trm_observability_harness\scripts\run_eval.py", line 129, in <module>
+    main()
+  File "C:\projects\trm_observability_harness\scripts\run_eval.py", line 113, in main
+    summary = run_episode(model, export_path, env_spec, max_steps, episode_index)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projects\trm_observability_harness\scripts\run_eval.py", line 55, in run_episode
+    records = runner.run_episode(env, max_steps=max_steps)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projects\trm_observability_harness\harness\runner.py", line 13, in run_episode
+    reset_out = env.reset()
+                ^^^^^^^^^^^
+  File "C:\projects\trm_observability_harness\envs\sweepweave_native.py", line 40, in reset
+    state = self._env.reset()
+            ^^^^^^^^^^^^^^^
+AttributeError: 'SweepweaveEnv' object has no attribute 'reset'

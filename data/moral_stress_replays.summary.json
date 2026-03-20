@@ -1,0 +1,13 @@
+{
+  "steps": 9,
+  "episodes": 6,
+  "per_env_steps": {
+    "needle_smoke": 6,
+    "rg_logic_smoke": 3
+  },
+  "failure_types": {},
+  "reward_totals": {
+    "needle_smoke": 0.0,
+    "rg_logic_smoke": 0.0
+  }
+}

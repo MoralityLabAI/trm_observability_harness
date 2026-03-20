@@ -1,0 +1,20 @@
+run_name: moral_qwopus_stress_test
+max_episodes: 3
+max_steps_per_episode: 2
+concurrency: 1
+export_path: data/moral_stress_replays.jsonl
+model:
+  provider: dummy-model
+  model_name: dummy-reasoner
+envs:
+  - type: needle_pathfinding
+    name: needle_smoke
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/trm_observability_harness/README.md
+    target_ending: target_ending_1
+    n_endings: 5
+    max_steps: 2
+  - type: reasoning_gym
+    name: rg_logic_smoke
+    gym_config: leg_counting
+    num_examples: 5

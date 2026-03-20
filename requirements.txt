@@ -1,0 +1,5 @@
+PyYAML>=6.0
+# Install ExLlamaV2 separately according to your CUDA/PyTorch stack.
+# Example runtime deps often include: torch, safetensors, sentencepiece, ninja
+
+filelock>=3.16

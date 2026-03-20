@@ -1,0 +1,29 @@
+run_name: qwopus_snacksack_remote
+max_episodes: 10
+max_steps_per_episode: 8
+concurrency: 1
+export_path: data/snacksack_replays.jsonl
+model:
+  provider: openai_compatible
+  base_url: http://snacksack-ms-7d32.tail3156cd.ts.net:8080/v1
+  model_name: Qwen3.5-27B.Q4_K_M
+  temperature: 0.2
+  top_p: 0.9
+  max_new_tokens: 256
+envs:
+  - type: dummy_primehub
+    name: dummy_primehub_smoke
+  - type: sweepweave_prime
+    name: sweepweave_storyworld
+    repo_path: C:/projects/prime-environments
+    load_kwargs:
+      num_examples: 8
+      seed: 42
+      include_sim_reward: true
+      max_turns: 6
+  - type: storyworld_native
+    name: diplomacy_storyworld
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    seed: 7
+    log_path: data/storyworld_native.log.jsonl

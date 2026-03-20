@@ -1,0 +1,24 @@
+run_name: reasoning_gym_smoke_test
+max_episodes: 5
+max_steps_per_episode: 1
+concurrency: 1
+export_path: data/rg_smoke_replays.jsonl
+model:
+  provider: exllamav2
+  model_name: Qwopus-27B
+  model_dir: C:/models/Qwopus-27B-EXL2
+  temperature: 0.0
+  max_new_tokens: 512
+envs:
+  - type: reasoning_gym
+    name: rg_leg_counting
+    gym_config: leg_counting
+    num_examples: 10
+  - type: reasoning_gym
+    name: rg_multi_task
+    gym_config:
+      - name: gsm8k
+        weight: 1.0
+      - name: wordle
+        weight: 1.0
+    num_examples: 10

@@ -1,0 +1,37 @@
+run_name: qwopus_primehub_observability
+max_episodes: 20
+max_steps_per_episode: 8
+concurrency: 1
+export_path: data/replays.jsonl
+model:
+  provider: exllamav2
+  model_name: Qwopus-27B
+  model_dir: C:/models/Qwopus-27B-EXL2
+  temperature: 0.2
+  top_p: 0.9
+  top_k: 40
+  max_new_tokens: 160
+  max_seq_len: 4096
+  # Optional for multi-GPU setups, e.g. "20,20" or "24,24"
+  # gpu_split: "24,24"
+envs:
+  - type: dummy_primehub
+    name: dummy_primehub_smoke
+  - type: sweepweave_prime
+    name: sweepweave_storyworld
+    repo_path: C:/projects/prime-environments
+    load_kwargs:
+      num_examples: 16
+      seed: 42
+      include_sim_reward: true
+      max_turns: 6
+  - type: storyworld_native
+    name: diplomacy_storyworld
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    seed: 7
+    log_path: data/storyworld_native.log.jsonl
+  - type: primehub_external
+    name: prime_wiki_search
+    command_template: ["python", "-m", "prime_env_hub.cli", "wiki-search"]
+    reset_args: ["--reset"]

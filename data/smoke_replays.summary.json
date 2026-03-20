@@ -1,0 +1,11 @@
+{
+  "steps": 6,
+  "episodes": 2,
+  "per_env_steps": {
+    "dummy_primehub_smoke": 6
+  },
+  "failure_types": {},
+  "reward_totals": {
+    "dummy_primehub_smoke": 2.4
+  }
+}
