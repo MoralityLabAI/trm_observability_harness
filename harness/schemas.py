@@ -35,6 +35,10 @@ class StepRecord:
     raw_model: Optional[Dict[str, Any]] = None
     thought: Optional[str] = None
     diary: Optional[str] = None
+    trace_contract_version: Optional[str] = None
+    trace_mode: Optional[str] = None
+    reasoning_trace: List[Dict[str, str]] = field(default_factory=list)
+    reasoning_summary: Optional[str] = None
     meta: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:

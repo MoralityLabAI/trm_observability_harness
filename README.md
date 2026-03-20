@@ -6,7 +6,7 @@ A lightweight starter repo for running a stronger base model through environment
 
 This harness is designed to:
 - run model-driven episodes across multiple environments
-- log observations, actions, short visible justifications, confidence, outcomes, tool calls, and recovery attempts
+- log observations, actions, bounded step-wise reasoning traces, short visible justifications, confidence, outcomes, tool calls, and recovery attempts
 - export JSONL replay data for later training of TRMs as monitors, critics, recovery modules, and route selectors
 - support a local ExLlamaV2 backend for EXL2 / ExLlamaV2-friendly quantized models
 - support an OpenAI-compatible server path for a larger remote GPU box or local llama-server
@@ -15,7 +15,7 @@ This harness is designed to:
 
 ## What this is not
 
-- not hidden chain-of-thought capture
+- not unrestricted hidden chain-of-thought capture
 - not a complete Dragon Rider / router pipeline
 - not a finalized Prime Hub or GPTStoryworld integration; those use adapter shims you can match to the real repo APIs
 
@@ -44,13 +44,20 @@ model:
   model_dir: /models/Qwopus-27B-EXL2
 ```
 
-The client prompts the model to emit a compact JSON object only:
+The client prompts the model to emit a compact JSON object:
+- `reasoning_trace`
+- `reasoning_summary`
 - `action`
 - `short_justification`
 - `confidence`
 - `action_type`
 
-This keeps the replay export structured and bounded.
+The trace is bounded and environment-aware:
+- reasoning envs: `givens`, `strategy`, `compute`, `verify`
+- storyworld envs: `state_read`, `agent_intent`, `risk_check`, `next_move`, `commit`
+- Prime Hub envs: `task_parse`, `constraint_check`, `candidate`, `self_check`
+
+This keeps the replay export structured, step-wise, and trainable across different env families.
 
 ## Quick start
 

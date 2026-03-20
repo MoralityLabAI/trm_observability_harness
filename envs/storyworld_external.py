@@ -61,3 +61,15 @@ class ExternalStoryWorldEnv(BaseEnv):
             'episode_summary': out.get('episode_summary'),
         }
         return out['observation'], float(out.get('reward', 0.0)), bool(out.get('done', False)), info
+
+    def trace_profile(self, meta: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        profile = super().trace_profile(meta)
+        profile.update(
+            {
+                "family": "storyworld",
+                "max_trace_steps": 5,
+                "action_guidance": "Use action for the exact storyworld bridge command or payload expected by the adapter.",
+                "step_labels": ["state_read", "agent_intent", "risk_check", "next_move", "commit"],
+            }
+        )
+        return profile

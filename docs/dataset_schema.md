@@ -32,9 +32,18 @@ Fields:
 - `outcome`: compact terminal or transition outcome
 - `raw_env`: raw adapter payload for debugging
 - `raw_model`: raw model payload for debugging
+- `trace_contract_version`: prompt-and-parse contract version for this row
+- `trace_mode`: trace collection mode, currently `stepwise`
+- `reasoning_trace`: bounded visible reasoning steps as `[{label, content}]`
+- `reasoning_summary`: one-sentence summary of why the chosen action was selected
 - `meta`: reset-time environment metadata
 
-The dataset is rich and expansive:
-- store detailed justifications and internal reasoning
-- explicitly capture hidden chain-of-thought (<think> blocks) in the `thought` field
-- store tool/action payloads and environment transitions for full observability
+Trace policy:
+- keep traces bounded and step-wise rather than long monologues
+- reasoning tasks should usually use labels like `givens`, `strategy`, `compute`, `verify`
+- storyworld tasks should usually use labels like `state_read`, `agent_intent`, `risk_check`, `next_move`, `commit`
+- Prime Hub and verifier tasks should usually use labels like `task_parse`, `constraint_check`, `candidate`, `self_check`
+
+Compatibility:
+- if a model still emits `<think>...</think>`, the harness may salvage it into `reasoning_trace`
+- `thought` and `diary` remain optional compatibility fields, not the primary training target

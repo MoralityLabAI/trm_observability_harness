@@ -98,3 +98,14 @@ class ReasoningGymEnv(BaseEnv):
             "response": response,
         }
         return observation, float(reward), done, info
+
+    def trace_profile(self, meta: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        profile = super().trace_profile(meta)
+        profile.update(
+            {
+                "family": "reasoning",
+                "action_guidance": "Put only the answer in action. Do not restate the trace in action.",
+                "step_labels": ["givens", "strategy", "compute", "verify"],
+            }
+        )
+        return profile

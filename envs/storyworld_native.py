@@ -92,3 +92,18 @@ class NativeStoryWorldEnv(BaseEnv):
             "state": state,
         }
         return str(state), float(info["reward"]), bool(done), info
+
+    def trace_profile(self, meta: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        profile = super().trace_profile(meta)
+        profile.update(
+            {
+                "family": "storyworld",
+                "max_trace_steps": 5,
+                "action_guidance": (
+                    "Use reasoning_trace to summarize state, agent intent, risk, and chosen move. "
+                    "Put only the final action or structured action payload in action."
+                ),
+                "step_labels": ["state_read", "agent_intent", "risk_check", "next_move", "commit"],
+            }
+        )
+        return profile

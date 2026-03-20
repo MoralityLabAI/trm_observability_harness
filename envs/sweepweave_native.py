@@ -63,3 +63,14 @@ class SweepweavePrimeEnv(BaseEnv):
             "state": state,
         }
         return observation, float(info["reward"]), bool(done), info
+
+    def trace_profile(self, meta: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        profile = super().trace_profile(meta)
+        profile.update(
+            {
+                "family": "primehub",
+                "action_guidance": "Use action for the exact JSON or text payload the Sweepweave verifier scores.",
+                "step_labels": ["task_parse", "constraint_check", "candidate", "self_check"],
+            }
+        )
+        return profile

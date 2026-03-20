@@ -2,6 +2,7 @@ from __future__ import annotations
 import uuid
 from typing import List, Dict, Any
 from .schemas import StepRecord
+from .trace_contract import TRACE_CONTRACT_VERSION
 
 class EpisodeRunner:
     def __init__(self, model_client, logger):
@@ -16,10 +17,22 @@ class EpisodeRunner:
         else:
             observation, meta = reset_out, {}
         task = meta.get('task', 'Unknown task')
+        trace_profile = env.trace_profile(meta)
         records: List[StepRecord] = []
 
         for step_id in range(max_steps):
-            resp = self.model_client.act(task=task, observation=observation)
+            resp = self.model_client.act(
+                task=task,
+                observation=observation,
+                context={
+                    'env_name': env.name,
+                    'env_type': getattr(env, 'env_type', env.__class__.__name__),
+                    'meta': meta,
+                    'step_id': step_id,
+                    'max_steps': max_steps,
+                    'trace_profile': trace_profile,
+                },
+            )
             next_obs, reward, done, info = env.step(resp)
             outcome = info.get('outcome') if isinstance(info, dict) else None
             labels = self._derive_labels(resp.action_type, reward, info)
@@ -52,9 +65,19 @@ class EpisodeRunner:
                 recovery_action_class=labels.get('recovery_action_class'),
                 thought=resp.thought,
                 diary=resp.diary,
+                trace_contract_version=resp.trace_contract_version or trace_profile.get('contract_version', TRACE_CONTRACT_VERSION),
+                trace_mode=resp.trace_mode or trace_profile.get('mode', 'stepwise'),
+                reasoning_trace=resp.reasoning_trace,
+                reasoning_summary=resp.reasoning_summary,
                 outcome=outcome,
                 raw_env=info,
-                raw_model={'raw_text': resp.raw_text, 'thought': resp.thought},
+                raw_model={
+                    'raw_text': resp.raw_text,
+                    'thought': resp.thought,
+                    'diary': resp.diary,
+                    'reasoning_trace': resp.reasoning_trace,
+                    'reasoning_summary': resp.reasoning_summary,
+                },
                 meta=meta,
             )
             self.logger.write(record)

@@ -27,6 +27,8 @@ def main():
     failure_types = Counter()
     rewards = defaultdict(float)
     valid = Counter()
+    trace_rows = 0
+    trace_steps = 0
     steps = 0
     episodes = set()
 
@@ -39,6 +41,10 @@ def main():
             env_types[row.get("env_type", "unknown")] += 1
             actions[row.get("action", "unknown")] += 1
             rewards[env] += float(row.get("reward") or 0.0)
+            trace = row.get("reasoning_trace") or []
+            if trace:
+                trace_rows += 1
+                trace_steps += len(trace)
             if row.get("valid_action") is True:
                 valid["true"] += 1
             elif row.get("valid_action") is False:
@@ -57,6 +63,8 @@ def main():
         "failure_types": dict(failure_types),
         "reward_totals": dict(rewards),
         "valid_action_counts": dict(valid),
+        "trace_rows": trace_rows,
+        "avg_trace_steps_per_row": round(trace_steps / trace_rows, 4) if trace_rows else 0.0,
     }
 
     text = json.dumps(report, indent=2)

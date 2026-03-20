@@ -87,3 +87,15 @@ class NeedlePathfindingEnv(BaseEnv):
         observation = f"Current Step: {self.current_step}/{self.max_steps}. Action taken: {action_text}"
         
         return observation, float(reward), done, info
+
+    def trace_profile(self, meta: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        profile = super().trace_profile(meta)
+        profile.update(
+            {
+                "family": "storyworld",
+                "max_trace_steps": 5,
+                "action_guidance": "Use action for the next pathfinding move or succinct route commitment.",
+                "step_labels": ["state_read", "target_alignment", "risk_check", "next_move", "commit"],
+            }
+        )
+        return profile
