@@ -7,7 +7,7 @@
 - Conclusion: Qwopus 27B in local ExLlamaV2 is not feasible on this machine
 - Added a safe OpenAI-compatible client path for larger GPU boxes or a local server
 - Added native adapters for:
-  - `prime-environments` Sweepweave
+  - `prime-environments` SWMD editor workflow
   - GPTStoryworld Diplomacy storyworlds
 - Kept replay outputs bounded:
   - short visible justification only
@@ -24,7 +24,7 @@
 ## Current assumptions
 
 - Native GPTStoryworld can load `C:/projects/GPTStoryworld/raw_storyworld.json`
-- Native Sweepweave can be imported from `C:/projects/prime-environments/environments/sweepweave_prime_env`
+- Native SWMD editor workflow can be imported from the upstream SWMD editor package path under `C:/projects/prime-environments/environments/`
 - The model runtime will be either:
   - an EXL2/ExLlamaV2 server on a bigger GPU box, or
   - an OpenAI-compatible endpoint

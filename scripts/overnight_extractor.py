@@ -43,10 +43,10 @@ def get_env_spec(category, task_name, seed):
             'seed': seed,
             'log_path': f"data/overnight/storyworld_env_logs.jsonl"
         }
-    if category == 'sweepweave':
+    if category == 'swmd_editor':
         return {
-            'type': 'sweepweave_prime',
-            'name': "sweepweave_overnight",
+            'type': 'swmd_editor',
+            'name': "swmd_editor_overnight",
             'repo_path': "C:/projects/prime-environments",
             'load_kwargs': {
                 'num_examples': 1,
@@ -80,7 +80,7 @@ def main():
     
     print(f"Extraction starting. End time: {datetime.fromtimestamp(end_time)}")
 
-    categories = ['reasoning_gym', 'storyworld', 'sweepweave']
+    categories = ['reasoning_gym', 'storyworld', 'swmd_editor']
     
     while time.time() < end_time:
         category = random.choice(categories)

@@ -82,6 +82,14 @@ Remote 3090 box:
 python scripts/run_eval.py --config configs/snacksack_remote.yaml
 ```
 
+OpenAI reference collector:
+
+```bash
+python scripts/run_eval.py --config configs/openai_o3_reasoning_reference.yaml
+```
+
+The `openai_api` provider can read `OPENAI_API_KEY` from the environment or parse a local key file such as `C:/Users/patri/OneDrive/Desktop/GPTAPI.txt`.
+
 To inspect the local runtime before a run:
 
 ```bash

@@ -3,7 +3,7 @@
 ## Local repos discovered
 
 - `C:/projects/prime-environments`
-  - Source of `sweepweave.load_environment(...)`
+  - Source of the SWMD editor workflow entrypoint
   - Best seam for Prime Hub-style synthetic/verifier tasks
 - `C:/projects/GPTStoryworld`
   - Source of `storyworld.env.DiplomacyStoryworldEnv`
@@ -25,8 +25,8 @@
   - Step-level replay schema plus derived labels
 - `envs/registry.py`
   - Adapter dispatch for dummy, native, and external environments
-- `envs/sweepweave_native.py`
-  - Native adapter for `prime-environments`
+- `envs/swmd_editor.py`
+  - Native adapter for `swmd_editor`
 - `envs/storyworld_native.py`
   - Native adapter for `GPTStoryworld`
 - `envs/primehub_external.py`
@@ -40,4 +40,3 @@
 - A stable, documented Prime Hub CLI contract for all target envs
 - A canonical storyworld sample path in GPTStoryworld
 - A shared inference server for one-model multi-env rapid-fire runs
-

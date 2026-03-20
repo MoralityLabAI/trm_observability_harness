@@ -1,0 +1,47 @@
+run_name: openai_o3mini_full_harness
+max_episodes: 50
+max_steps_per_episode: 1
+concurrency: 1
+export_path: data/openai_o3mini_full_harness.jsonl
+model:
+  provider: openai_api
+  model_name: o3-mini
+  api_key_path: C:/Users/patri/OneDrive/Desktop/GPTAPI.txt
+  max_output_tokens: 700
+  reasoning_effort: medium
+envs:
+  - type: reasoning_gym
+    name: rg_leg_counting_reference
+    gym_config: leg_counting
+    num_examples: 3
+    seed: 42
+  - type: reasoning_gym
+    name: rg_logic_reference
+    gym_config: propositional_logic
+    num_examples: 3
+    seed: 42
+  - type: reasoning_gym
+    name: rg_geometry_reference
+    gym_config: simple_geometry
+    num_examples: 3
+    seed: 42
+  - type: reasoning_gym
+    name: rg_arithmetic_reference
+    gym_config: basic_arithmetic
+    num_examples: 3
+    seed: 42
+  - type: storyworld_native
+    name: storyworld_native_reference
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    seed: 7
+    log_path: data/storyworld_native_reference.log.jsonl
+  - type: needle_pathfinding
+    name: needle_pathfinding_reference
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    target_ending: hidden_ending
+    n_endings: 12
+    max_steps: 1
+  - type: dummy_primehub
+    name: dummy_primehub_reference

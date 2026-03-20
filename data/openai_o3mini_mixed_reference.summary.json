@@ -1,0 +1,25 @@
+{
+  "steps": 24,
+  "episodes": 24,
+  "per_env_steps": {
+    "rg_leg_counting_reference": 3,
+    "rg_logic_reference": 3,
+    "rg_geometry_reference": 3,
+    "rg_arithmetic_reference": 3,
+    "storyworld_native_reference": 3,
+    "needle_pathfinding_reference": 3,
+    "rg_count_primes_reference": 3,
+    "storyworld_native_reference_b": 3
+  },
+  "failure_types": {},
+  "reward_totals": {
+    "rg_leg_counting_reference": 0.01843600156293655,
+    "rg_logic_reference": 0.0,
+    "rg_geometry_reference": 0.01290516733203048,
+    "rg_arithmetic_reference": 0.012804243008678882,
+    "storyworld_native_reference": 0.0,
+    "needle_pathfinding_reference": 0.0,
+    "rg_count_primes_reference": 0.0,
+    "storyworld_native_reference_b": 0.0
+  }
+}

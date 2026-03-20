@@ -3,7 +3,7 @@ from typing import Any, Dict
 from .dummy_primehub import DummyPrimeHubEnv
 from .storyworld_external import ExternalStoryWorldEnv
 from .primehub_external import ExternalPrimeHubEnv
-from .sweepweave_native import SweepweavePrimeEnv
+from .swmd_editor import SwmdEditorEnv
 from .storyworld_native import NativeStoryWorldEnv
 from .reasoning_gym import ReasoningGymEnv
 from .needle_pathfinding import NeedlePathfindingEnv
@@ -23,8 +23,8 @@ def build_env(spec: Dict[str, Any]):
             n_endings=spec.get('n_endings', 12),
             max_steps=spec.get('max_steps', 5),
         )
-    if env_type == 'sweepweave_prime':
-        return SweepweavePrimeEnv(
+    if env_type in {'swmd_editor', 'sweepweave_prime'}:
+        return SwmdEditorEnv(
             name=name,
             repo_path=spec['repo_path'],
             load_kwargs=spec.get('load_kwargs', {}),

@@ -1,7 +1,9 @@
 from __future__ import annotations
 import json
+import os
 import re
 import urllib.request
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, Any, Dict, List
 
@@ -23,6 +25,7 @@ class ModelResponse:
     reasoning_summary: Optional[str] = None
     trace_contract_version: Optional[str] = None
     trace_mode: Optional[str] = None
+    usage: Optional[Dict[str, Any]] = None
 
 
 class DummyModelClient:
@@ -48,6 +51,7 @@ class DummyModelClient:
                 reasoning_summary='Recover conservatively from the visible error state.',
                 trace_contract_version=trace_profile.get('contract_version', TRACE_CONTRACT_VERSION),
                 trace_mode=trace_profile.get('mode', 'stepwise'),
+                usage=None,
             )
         return ModelResponse(
             action='inspect_and_continue',
@@ -64,6 +68,7 @@ class DummyModelClient:
             reasoning_summary='Continue with a low-risk inspection move.',
             trace_contract_version=trace_profile.get('contract_version', TRACE_CONTRACT_VERSION),
             trace_mode=trace_profile.get('mode', 'stepwise'),
+            usage=None,
         )
 
 
@@ -218,6 +223,7 @@ class ExLlamaV2Client:
             reasoning_summary=str(parsed.get('reasoning_summary', '')).strip() or None,
             trace_contract_version=trace_profile.get('contract_version', TRACE_CONTRACT_VERSION),
             trace_mode=trace_profile.get('mode', 'stepwise'),
+            usage=None,
         )
 
 
@@ -324,6 +330,7 @@ class OpenAICompatibleClient:
             reasoning_summary=str(parsed.get("reasoning_summary", "")).strip() or None,
             trace_contract_version=trace_profile.get("contract_version", TRACE_CONTRACT_VERSION),
             trace_mode=trace_profile.get("mode", "stepwise"),
+            usage=raw.get("usage") if isinstance(raw.get("usage"), dict) else None,
         )
 
 
@@ -334,3 +341,113 @@ def _fallback_trace_from_text(parsed: dict, thought: Optional[str], trace_profil
     if thought:
         return normalize_reasoning_trace(thought, trace_profile.get("max_trace_steps", 4))
     return []
+
+
+def _extract_api_key(api_key: Optional[str] = None, api_key_path: Optional[str] = None) -> str:
+    if api_key:
+        return api_key.strip()
+    if api_key_path:
+        text = Path(api_key_path).read_text(encoding="utf-8").strip()
+        if not text:
+            raise ValueError(f"API key file is empty: {api_key_path}")
+        match = re.search(r'OPENAI_API_KEY["\\\']?\s*=\s*["\\\']([^"\\\']+)["\\\']', text)
+        if match:
+            return match.group(1).strip()
+        if text.startswith("sk-"):
+            return text
+    env_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if env_key:
+        return env_key
+    raise ValueError("OpenAI API key not found. Set OPENAI_API_KEY or provide api_key_path.")
+
+
+class OpenAIAPIClient:
+    """Client for the OpenAI Responses API."""
+
+    def __init__(
+        self,
+        model_name: str,
+        api_key: Optional[str] = None,
+        api_key_path: Optional[str] = None,
+        max_output_tokens: int = 512,
+        reasoning_effort: Optional[str] = None,
+    ):
+        self.model_name = model_name
+        self.api_key = _extract_api_key(api_key=api_key, api_key_path=api_key_path)
+        self.max_output_tokens = max_output_tokens
+        self.reasoning_effort = reasoning_effort
+        self.base_url = "https://api.openai.com/v1/responses"
+
+    def _build_input(self, task: str, observation: str, context: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        trace_profile = (context or {}).get("trace_profile") or default_trace_profile("unknown", "generic", {})
+        env_name = (context or {}).get("env_name", "unknown")
+        env_type = (context or {}).get("env_type", "generic")
+        step_id = int((context or {}).get("step_id", 0))
+        max_steps = int((context or {}).get("max_steps", 1))
+        system = build_system_prompt(trace_profile)
+        user = (
+            f"ENV_NAME: {env_name}\n"
+            f"ENV_TYPE: {env_type}\n"
+            f"STEP: {step_id + 1}/{max_steps}\n\n"
+            f"TASK:\n{task}\n\n"
+            f"OBSERVATION:\n{observation}"
+        )
+        return [
+            {
+                "role": "system",
+                "content": [{"type": "input_text", "text": system}],
+            },
+            {
+                "role": "user",
+                "content": [{"type": "input_text", "text": user}],
+            },
+        ]
+
+    def _extract_output_text(self, raw: Dict[str, Any]) -> str:
+        output_parts: List[str] = []
+        for item in raw.get("output", []):
+            for content in item.get("content", []):
+                if content.get("type") == "output_text":
+                    output_parts.append(content.get("text", ""))
+        return "".join(output_parts).strip()
+
+    def act(self, task: str, observation: str, context: Optional[Dict[str, Any]] = None) -> ModelResponse:
+        trace_profile = (context or {}).get("trace_profile") or default_trace_profile("unknown", "generic", {})
+        payload: Dict[str, Any] = {
+            "model": self.model_name,
+            "input": self._build_input(task, observation, context=context),
+            "max_output_tokens": self.max_output_tokens,
+        }
+        if self.reasoning_effort:
+            payload["reasoning"] = {"effort": self.reasoning_effort}
+
+        req = urllib.request.Request(
+            self.base_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=600) as resp:
+            raw = json.loads(resp.read().decode("utf-8"))
+        text = self._extract_output_text(raw)
+        parsed = OpenAICompatibleClient._extract_json(self, text)
+        thought = None
+        diary = None
+        return ModelResponse(
+            action=str(parsed.get("action", "inspect_and_continue")),
+            short_justification=str(parsed.get("short_justification", "No justification provided.")),
+            confidence=float(parsed.get("confidence", 0.5)),
+            action_type=str(parsed.get("action_type", "generic")),
+            action_args=parsed.get("action_args") if isinstance(parsed.get("action_args"), dict) else None,
+            tool_calls=parsed.get("tool_calls") if isinstance(parsed.get("tool_calls"), list) else [],
+            raw_text=text,
+            thought=thought,
+            diary=diary,
+            reasoning_trace=_fallback_trace_from_text(parsed, thought, trace_profile),
+            reasoning_summary=str(parsed.get("reasoning_summary", "")).strip() or None,
+            trace_contract_version=trace_profile.get("contract_version", TRACE_CONTRACT_VERSION),
+            trace_mode=trace_profile.get("mode", "stepwise"),
+            usage=raw.get("usage") if isinstance(raw.get("usage"), dict) else None,
+        )

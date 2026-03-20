@@ -29,6 +29,7 @@ def main():
     valid = Counter()
     trace_rows = 0
     trace_steps = 0
+    token_usage = defaultdict(int)
     steps = 0
     episodes = set()
 
@@ -45,6 +46,16 @@ def main():
             if trace:
                 trace_rows += 1
                 trace_steps += len(trace)
+            usage = row.get("usage") or (row.get("raw_model") or {}).get("usage")
+            if isinstance(usage, dict):
+                for key in ("input_tokens", "prompt_tokens"):
+                    if isinstance(usage.get(key), int):
+                        token_usage[key] += int(usage[key])
+                for key in ("output_tokens", "completion_tokens"):
+                    if isinstance(usage.get(key), int):
+                        token_usage[key] += int(usage[key])
+                if isinstance(usage.get("total_tokens"), int):
+                    token_usage["total_tokens"] += int(usage["total_tokens"])
             if row.get("valid_action") is True:
                 valid["true"] += 1
             elif row.get("valid_action") is False:
@@ -65,6 +76,7 @@ def main():
         "valid_action_counts": dict(valid),
         "trace_rows": trace_rows,
         "avg_trace_steps_per_row": round(trace_steps / trace_rows, 4) if trace_rows else 0.0,
+        "token_usage": dict(token_usage),
     }
 
     text = json.dumps(report, indent=2)

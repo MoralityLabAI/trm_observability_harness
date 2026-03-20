@@ -17,8 +17,8 @@ model:
 envs:
   - type: dummy_primehub
     name: dummy_primehub_smoke
-  - type: sweepweave_prime
-    name: sweepweave_storyworld
+  - type: swmd_editor
+    name: swmd_editor_storyworld
     repo_path: C:/projects/prime-environments
     load_kwargs:
       num_examples: 16

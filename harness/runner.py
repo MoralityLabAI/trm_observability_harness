@@ -69,6 +69,7 @@ class EpisodeRunner:
                 trace_mode=resp.trace_mode or trace_profile.get('mode', 'stepwise'),
                 reasoning_trace=resp.reasoning_trace,
                 reasoning_summary=resp.reasoning_summary,
+                usage=resp.usage,
                 outcome=outcome,
                 raw_env=info,
                 raw_model={
@@ -77,6 +78,7 @@ class EpisodeRunner:
                     'diary': resp.diary,
                     'reasoning_trace': resp.reasoning_trace,
                     'reasoning_summary': resp.reasoning_summary,
+                    'usage': resp.usage,
                 },
                 meta=meta,
             )

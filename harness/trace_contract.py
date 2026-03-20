@@ -52,11 +52,11 @@ def default_trace_profile(env_name: str, env_type: str, meta: Dict[str, Any] | N
                 ],
             }
         )
-    elif env_type in {"sweepweave_prime", "primehub_external"} or "prime" in source:
+    elif env_type in {"swmd_editor", "sweepweave_prime", "primehub_external"} or "prime" in source:
         profile.update(
             {
-                "family": "primehub",
-                "action_guidance": "Return a verifier-friendly action or payload that obeys the environment contract exactly.",
+                "family": "swmd_editor",
+                "action_guidance": "Return a verifier-friendly edit action or payload that obeys the SWMD editor contract exactly.",
                 "step_labels": [
                     "task_parse",
                     "constraint_check",
@@ -114,4 +114,3 @@ def normalize_reasoning_trace(value: Any, max_steps: int = 6) -> List[Dict[str, 
             if content:
                 normalized.append({"label": f"step_{idx + 1}", "content": content})
     return normalized
-

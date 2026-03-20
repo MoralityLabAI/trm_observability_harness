@@ -15,7 +15,7 @@
 
 ## Recommended corpus mix
 
-- Sweepweave for structured generation and verifier-rich failures
+- SWMD editor workflows for structured generation and verifier-rich failures
 - GPTStoryworld for multi-agent state transitions and message/action coupling
 - Prime Hub-style external tasks for planning, retrieval, and constrained decision-making
 

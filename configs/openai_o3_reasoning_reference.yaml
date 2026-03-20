@@ -1,0 +1,22 @@
+run_name: openai_o3_reasoning_reference
+max_episodes: 3
+max_steps_per_episode: 1
+concurrency: 1
+export_path: data/openai_o3_reasoning_reference.jsonl
+model:
+  provider: openai_api
+  model_name: o3
+  api_key_path: C:/Users/patri/OneDrive/Desktop/GPTAPI.txt
+  max_output_tokens: 700
+  reasoning_effort: medium
+envs:
+  - type: reasoning_gym
+    name: rg_leg_counting_reference
+    gym_config: leg_counting
+    num_examples: 3
+    seed: 42
+  - type: reasoning_gym
+    name: rg_logic_reference
+    gym_config: propositional_logic
+    num_examples: 3
+    seed: 42

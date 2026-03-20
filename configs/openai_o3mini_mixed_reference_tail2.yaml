@@ -1,0 +1,23 @@
+run_name: openai_o3mini_mixed_reference_tail2
+max_episodes: 3
+max_steps_per_episode: 1
+concurrency: 1
+export_path: data/openai_o3mini_mixed_reference.jsonl
+model:
+  provider: openai_api
+  model_name: o3-mini
+  api_key_path: C:/Users/patri/OneDrive/Desktop/GPTAPI.txt
+  max_output_tokens: 700
+  reasoning_effort: medium
+envs:
+  - type: reasoning_gym
+    name: rg_count_primes_reference
+    gym_config: count_primes
+    num_examples: 3
+    seed: 42
+  - type: storyworld_native
+    name: storyworld_native_reference_b
+    repo_path: C:/projects/GPTStoryworld
+    storyworld_path: C:/projects/GPTStoryworld/raw_storyworld.json
+    seed: 21
+    log_path: data/storyworld_native_reference_b.log.jsonl
